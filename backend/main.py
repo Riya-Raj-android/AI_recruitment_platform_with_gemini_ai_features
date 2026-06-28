@@ -81,9 +81,7 @@ async def upload_resume(
         "message": "Resume already uploaded",
         "filename": file.filename
       }
-
     
-
     candidate = Candidate(
         filename=file.filename,
         skills=", ".join(skills),
