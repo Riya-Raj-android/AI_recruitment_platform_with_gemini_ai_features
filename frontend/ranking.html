@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ranking - AI Recruitment Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <h1>AI <span>Recruitment</span> Platform</h1>
+        <nav class="tabs">
+            <a href="index.html">Upload</a>
+            <a href="candidates.html">Candidates</a>
+            <a href="ranking.html" class="active">Ranking</a>
+            <a href="job_match.html">Job Match</a>
+            <a href="ai_tools.html">AI Tools</a>
+        </nav>
+    </header>
+
+    <div class="page">
+        <h2 class="section-title">Candidates Ranked by ATS Score</h2>
+        <p class="section-sub">Highest scoring candidates first, based on the most recent ATS score calculated for each.</p>
+
+        <div class="card">
+            <button type="button" class="secondary" onclick="loadRanking()">Refresh</button>
+            <div id="result" style="margin-top:16px;" class="placeholder">Loading...</div>
+        </div>
+    </div>
+
+    <script src="ranking.js"></script>
+    <script>loadRanking();</script>
+
+</body>
+</html>

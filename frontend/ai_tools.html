@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Tools - AI Recruitment Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <h1>AI <span>Recruitment</span> Platform</h1>
+        <nav class="tabs">
+            <a href="index.html">Upload</a>
+            <a href="candidates.html">Candidates</a>
+            <a href="ranking.html">Ranking</a>
+            <a href="job_match.html">Job Match</a>
+            <a href="ai_tools.html" class="active">AI Tools</a>
+        </nav>
+    </header>
+
+    <div class="page">
+        <h2 class="section-title">AI Tools</h2>
+        <p class="section-sub">Powered by Gemini. Pick a candidate and (optionally) paste a job description, then generate feedback, interview questions, or a skill gap plan.</p>
+
+        <div class="card">
+            <label for="candidateSelect">Candidate</label>
+            <select id="candidateSelect">
+                <option value="">Loading candidates...</option>
+            </select>
+
+            <label for="jobDescription">Job Description (optional, improves all three tools)</label>
+            <textarea id="jobDescription" placeholder="Paste a job description here..."></textarea>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button type="button" onclick="runResumeFeedback()">Resume Feedback</button>
+                <button type="button" onclick="runInterviewQuestions()">Interview Questions</button>
+                <button type="button" onclick="runSkillGap()">Skill Gap Analysis</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Resume Feedback</h3>
+            <div id="feedbackResult" class="placeholder">Click "Resume Feedback" to generate.</div>
+        </div>
+
+        <div class="card">
+            <h3>Interview Questions</h3>
+            <div id="questionsResult" class="placeholder">Click "Interview Questions" to generate.</div>
+        </div>
+
+        <div class="card">
+            <h3>Skill Gap Analysis</h3>
+            <div id="skillGapResult" class="placeholder">Click "Skill Gap Analysis" to generate.</div>
+        </div>
+    </div>
+
+    <script src="ai_tools.js"></script>
+    <script>loadCandidateOptions();</script>
+
+</body>
+</html>
