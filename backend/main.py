@@ -52,12 +52,15 @@ class AIFeedbackRequest(BaseModel):
     filename: str
     job_description: str = ""    
 
+DEFAULT_REQUIRED_SKILLS = [
+    "Python", "Java", "SQL", "JavaScript", "React",
+    "HTML", "CSS", "C++", "Git", "REST API"
+]
+
 UPLOAD_DIR = "resumes"
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# @app.post("/upload-resume")
-# async def upload_resume(file: UploadFile = File(...)):
 @app.post("/upload-resume")
 async def upload_resume(
     file: UploadFile = File(...),
@@ -82,10 +85,30 @@ async def upload_resume(
         "filename": file.filename
       }
     
+    # candidate = Candidate(
+    #     filename=file.filename,
+    #     skills=", ".join(skills),
+    #     ats_score=0,
+    #     resume_text=extracted_text
+    # )
+
+    # db.add(candidate)
+    # db.commit()
+    # db.refresh(candidate)
+
+    # return {
+    #     "message": "Resume uploaded successfully",
+    #     "filename": file.filename,
+    #     # "text": extracted_text
+    #     "skills": skills
+    # }
+
+    ats_result = calculate_ats_score(skills, DEFAULT_REQUIRED_SKILLS)
+
     candidate = Candidate(
         filename=file.filename,
         skills=", ".join(skills),
-        ats_score=0,
+        ats_score=ats_result["score"],
         resume_text=extracted_text
     )
 
@@ -96,8 +119,8 @@ async def upload_resume(
     return {
         "message": "Resume uploaded successfully",
         "filename": file.filename,
-        # "text": extracted_text
-        "skills": skills
+        "skills": skills,
+        "ats_score": ats_result["score"]
     }
 
 @app.post("/ats-score")
@@ -143,6 +166,26 @@ def resume_ats_score(
         "filename": data.filename,
         **result
     }
+
+@app.post("/recalculate-default-scores")
+def recalculate_default_scores(
+    db: Session = Depends(get_db)
+):
+    candidates = db.query(Candidate).all()
+
+    for candidate in candidates:
+        candidate_skills = (
+            candidate.skills.split(", ")
+            if candidate.skills
+            else []
+        )
+        result = calculate_ats_score(candidate_skills, DEFAULT_REQUIRED_SKILLS)
+        candidate.ats_score = result["score"]
+
+    db.commit()
+
+    return {"message": f"Recalculated scores for {len(candidates)} candidates"}
+
 
 @app.get("/candidates")
 def get_candidates(
