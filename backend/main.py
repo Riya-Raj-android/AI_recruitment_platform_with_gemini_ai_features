@@ -52,6 +52,8 @@ class AIFeedbackRequest(BaseModel):
     filename: str
     job_description: str = ""    
 
+# Used to give every uploaded resume a real default ATS score
+# (general tech-readiness score) instead of leaving it at 0
 DEFAULT_REQUIRED_SKILLS = [
     "Python", "Java", "SQL", "JavaScript", "React",
     "HTML", "CSS", "C++", "Git", "REST API"
@@ -61,6 +63,8 @@ UPLOAD_DIR = "resumes"
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+# @app.post("/upload-resume")
+# async def upload_resume(file: UploadFile = File(...)):
 @app.post("/upload-resume")
 async def upload_resume(
     file: UploadFile = File(...),
@@ -84,24 +88,8 @@ async def upload_resume(
         "message": "Resume already uploaded",
         "filename": file.filename
       }
+
     
-    # candidate = Candidate(
-    #     filename=file.filename,
-    #     skills=", ".join(skills),
-    #     ats_score=0,
-    #     resume_text=extracted_text
-    # )
-
-    # db.add(candidate)
-    # db.commit()
-    # db.refresh(candidate)
-
-    # return {
-    #     "message": "Resume uploaded successfully",
-    #     "filename": file.filename,
-    #     # "text": extracted_text
-    #     "skills": skills
-    # }
 
     ats_result = calculate_ats_score(skills, DEFAULT_REQUIRED_SKILLS)
 
@@ -119,6 +107,7 @@ async def upload_resume(
     return {
         "message": "Resume uploaded successfully",
         "filename": file.filename,
+        # "text": extracted_text
         "skills": skills,
         "ats_score": ats_result["score"]
     }
@@ -186,6 +175,28 @@ def recalculate_default_scores(
 
     return {"message": f"Recalculated scores for {len(candidates)} candidates"}
 
+@app.get("/stats")
+def get_stats(db: Session = Depends(get_db)):
+    candidates = db.query(Candidate).all()
+    total = len(candidates)
+    avg_score = round(sum(c.ats_score for c in candidates) / total, 1) if total else 0
+
+    skill_counts = {}
+    for c in candidates:
+        if c.skills:
+            for s in c.skills.split(", "):
+                skill_counts[s] = skill_counts.get(s, 0) + 1
+
+    top_skills = sorted(skill_counts.items(), key=lambda x: x[1], reverse=True)[:6]
+
+    high_scorers = len([c for c in candidates if c.ats_score >= 70])
+
+    return {
+        "total_candidates": total,
+        "average_ats_score": avg_score,
+        "high_scorers": high_scorers,
+        "top_skills": [{"skill": s, "count": n} for s, n in top_skills]
+    }
 
 @app.get("/candidates")
 def get_candidates(

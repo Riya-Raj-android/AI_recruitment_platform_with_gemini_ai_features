@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - AI Recruitment Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="topbar" id="siteHeader"></header>
+
+    <div class="page">
+        <h2 class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Dashboard
+        </h2>
+        <p class="section-sub">Live overview of all candidates uploaded so far.</p>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-label">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    Total Candidates
+                </div>
+                <div class="stat-value" id="statTotal">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    Average ATS Score
+                </div>
+                <div class="stat-value" id="statAvg">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                    Strong Candidates (70%+)
+                </div>
+                <div class="stat-value" id="statHigh">—</div>
+            </div>
+        </div>
+
+        <div class="quick-links">
+            <a href="index.html" class="quick-link-card">
+                <div class="ql-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                <span>Upload Resume</span>
+            </a>
+            <a href="candidates.html" class="quick-link-card">
+                <div class="ql-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+                <span>Candidates</span>
+            </a>
+            <a href="ranking.html" class="quick-link-card">
+                <div class="ql-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+                <span>Ranking</span>
+            </a>
+            <a href="job_match.html" class="quick-link-card">
+                <div class="ql-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+                <span>Job Match</span>
+            </a>
+            <a href="ai_tools.html" class="quick-link-card">
+                <div class="ql-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3z"/></svg></div>
+                <span>AI Tools</span>
+            </a>
+        </div>
+
+        <div class="card">
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Most Common Skills</h3>
+            <div class="skill-tag-row" id="topSkills">
+                <span class="placeholder">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="icons.js"></script>
+    <script>
+        injectHeader("dashboard.html");
+
+        const API_BASE = "https://ai-recruitment-platform-with-gemini-ai.onrender.com";
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+
+                document.getElementById("statTotal").textContent = data.total_candidates;
+                document.getElementById("statAvg").textContent = data.average_ats_score + "%";
+                document.getElementById("statHigh").textContent = data.high_scorers;
+
+                const topSkillsDiv = document.getElementById("topSkills");
+                if (!data.top_skills.length) {
+                    topSkillsDiv.innerHTML = "<span class='placeholder'>No candidates uploaded yet.</span>";
+                } else {
+                    topSkillsDiv.innerHTML = data.top_skills
+                        .map(s => `<span class="badge mid">${s.skill} (${s.count})</span>`)
+                        .join("");
+                }
+            } catch (error) {
+                console.error("ERROR loading stats:", error);
+                document.getElementById("statTotal").textContent = "—";
+                document.getElementById("statAvg").textContent = "—";
+                document.getElementById("statHigh").textContent = "—";
+            }
+        }
+
+        loadStats();
+    </script>
+
+</body>
+</html>

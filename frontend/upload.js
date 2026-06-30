@@ -1,4 +1,3 @@
-
 const API_BASE = "https://ai-recruitment-platform-with-gemini-ai.onrender.com";
 
 function renderUploadResult(data) {

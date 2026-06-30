@@ -6,27 +6,26 @@
 </head>
 <body>
 
-    <header class="topbar">
-        <h1>AI <span>Recruitment</span> Platform</h1>
-        <nav class="tabs">
-            <a href="index.html">Upload</a>
-            <a href="candidates.html" class="active">Candidates</a>
-            <a href="ranking.html">Ranking</a>
-            <a href="job_match.html">Job Match</a>
-            <a href="ai_tools.html">AI Tools</a>
-        </nav>
-    </header>
+    <header class="topbar" id="siteHeader"></header>
 
     <div class="page">
-        <h2 class="section-title">All Candidates</h2>
+        <h2 class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            All Candidates
+        </h2>
         <p class="section-sub">Every resume uploaded so far, with detected skills and current ATS score.</p>
 
         <div class="card">
-            <button type="button" class="secondary" onclick="loadCandidates()">Refresh</button>
+            <button type="button" class="secondary" onclick="loadCandidates()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Refresh
+            </button>
             <div id="result" style="margin-top:16px;" class="placeholder">Loading...</div>
         </div>
     </div>
 
+    <script src="icons.js"></script>
+    <script>injectHeader("candidates.html");</script>
     <script src="candidates.js"></script>
     <script>loadCandidates();</script>
 

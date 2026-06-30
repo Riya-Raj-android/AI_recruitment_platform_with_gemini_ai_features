@@ -1,16 +1,3 @@
-# SKILLS = [
-#     "Python",
-#     "Java",
-#     "C++",
-#     "SQL",
-#     "PostgreSQL",
-#     "FastAPI",
-#     "HTML",
-#     "CSS",
-#     "JavaScript",
-#     "React",
-# ]
-
 SKILLS = [
     # Languages
     "Python", "Java", "C++", "C", "C#", "JavaScript", "TypeScript",

@@ -1,7 +1,5 @@
-
 import os
 import json
-import time
 import requests
 from dotenv import load_dotenv
 
@@ -33,6 +31,8 @@ def _call_gemini(prompt: str) -> str:
             {"parts": [{"text": prompt}]}
         ]
     }
+
+    import time
 
     last_error = None
 
